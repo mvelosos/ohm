@@ -1,3 +1,7 @@
+## 3.1.2
+
+- Use Redis instead of Redic
+
 ## 3.1.1
 
 - Serialize keys as strings when using JSON.
