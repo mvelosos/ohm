@@ -69,15 +69,15 @@ Now, in an irb session you can test the Redis adapter directly:
 
 ## Connecting to a Redis database
 
-Ohm uses a lightweight Redis client called [Redic][redic]. To connect
-to a Redis database, you will need to set an instance of `Redic`, with
+Ohm uses a lightweight Redis client. To connect
+to a Redis database, you will need to set an instance of `Redis`, with
 an URL of the form `redis://:<passwd>@<host>:<port>/<db>`, through the
 `Ohm.redis=` method, e.g.
 
 ```ruby
 require "ohm"
 
-Ohm.redis = Redic.new("redis://127.0.0.1:6379")
+Ohm.redis = Redis.new("redis://127.0.0.1:6379")
 
 Ohm.redis.call "SET", "Foo", "Bar"
 
@@ -85,7 +85,7 @@ Ohm.redis.call "GET", "Foo"
 # => "Bar"
 ```
 
-Ohm defaults to a Redic connection to "redis://127.0.0.1:6379". The
+Ohm defaults to a Redis connection to "redis://127.0.0.1:6379". The
 example above could be rewritten as:
 
 ```ruby
@@ -104,12 +104,12 @@ they simple have to override that, i.e.
 ```ruby
 require "ohm"
 
-Ohm.redis = Redic.new(ENV["REDIS_URL1"])
+Ohm.redis = Redis.new(host: ENV["REDIS_HOST1"], port: ENV["REDIS_PORT1"])
 
 class User < Ohm::Model
 end
 
-User.redis = Redic.new(ENV["REDIS_URL2"])
+User.redis = Redis.new(host: ENV["REDIS_HOST2"], port: ENV["REDIS_PORT2"])
 ```
 
 Models
@@ -567,4 +567,4 @@ To know about fixes and changes, please refer to the CHANGELOG file.
 
 [redis]: http://redis.io
 [ohm]: http://github.com/soveran/ohm
-[redic]: https://github.com/amakawa/redic
+[redis]: https://github.com/redis/redis-rb
