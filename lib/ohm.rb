@@ -141,8 +141,10 @@ module Ohm
       data = nil
 
       model.synchronize do
-        ids.each do |id|
-          redis.queue("HGETALL", namespace[id])
+        redis.pipelined do
+          ids.each do |id|
+            redis.call("HGETALL", namespace[id])
+          end
         end
 
         data = redis.commit
@@ -245,11 +247,13 @@ module Ohm
       ids = models.map(&:id)
 
       model.synchronize do
-        redis.queue("MULTI")
-        redis.queue("DEL", key)
-        ids.each { |id| redis.queue("RPUSH", key, id) }
-        redis.queue("EXEC")
-        redis.commit
+        redis.pipelined do
+          redis.call("MULTI")
+          redis.call("DEL", key)
+          ids.each { |id| redis.call("RPUSH", key, id) }
+          redis.call("EXEC")
+          redis.commit
+        end
       end
     end
 
@@ -637,11 +641,13 @@ module Ohm
       ids = models.map(&:id)
 
       model.synchronize do
-        redis.queue("MULTI")
-        redis.queue("DEL", key)
-        ids.each { |id| redis.queue("SADD", key, id) }
-        redis.queue("EXEC")
-        redis.commit
+        redis.pipelined do
+          redis.call("MULTI")
+          redis.call("DEL", key)
+          ids.each { |id| redis.call("SADD", key, id) }
+          redis.call("EXEC")
+          redis.commit
+        end
       end
     end
   end
