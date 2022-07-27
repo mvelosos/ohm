@@ -2,7 +2,7 @@
 
 require "json"
 require "nest"
-require "redic"
+require "redis"
 require "stal"
 
 module Ohm
@@ -102,7 +102,7 @@ module Ohm
   #   Ohm.redis.call("FLUSH")
   #
   def self.redis
-    @redis ||= Redic.new
+    @redis ||= Redis.new
   end
 
   def self.redis=(redis)
@@ -1424,7 +1424,7 @@ module Ohm
     # successive calls.
     def script(file, *args)
       begin
-        cache = LUA_CACHE[redis.url]
+        cache = LUA_CACHE[redis.connection[:id]]
 
         if cache.key?(file)
           sha = cache[file]
@@ -1435,13 +1435,13 @@ module Ohm
           cache[file] = sha
         end
 
-        redis.call!("EVALSHA", sha, *args)
+        redis.call("EVALSHA", sha, *args)
 
       rescue RuntimeError
 
         case $!.message
         when ErrorPatterns::NOSCRIPT
-          LUA_CACHE[redis.url].clear
+          LUA_CACHE[redis.connection[:id]].clear
           retry
         when ErrorPatterns::DUPLICATE
           raise UniqueIndexViolation, $1

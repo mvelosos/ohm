@@ -16,7 +16,7 @@ $VERBOSE = true
 
 require_relative "../lib/ohm"
 
-Ohm.redis = Redic.new("redis://127.0.0.1:6379")
+Ohm.redis = Redis.new(host: "127.0.0.1", port: 6379)
 
 prepare do
   Ohm.redis.call("FLUSHALL")

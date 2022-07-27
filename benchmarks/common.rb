@@ -1,7 +1,7 @@
 require "bench"
 require_relative "../lib/ohm"
 
-Ohm.redis = Redic.new("redis://127.0.0.1:6379/15")
+Ohm.redis = Redis.new(host: "127.0.0.1", port: 6379, db: 15)
 Ohm.flush
 
 class Event < Ohm::Model

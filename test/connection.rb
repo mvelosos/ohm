@@ -4,13 +4,13 @@ test "model inherits Ohm.redis connection by default" do
   class C < Ohm::Model
   end
 
-  assert_equal C.redis.url, Ohm.redis.url
+  assert_equal C.redis.connection[:id], Ohm.redis.connection[:id]
 end
 
 test "model can define its own connection" do
   class B < Ohm::Model
-    self.redis = Redic.new("redis://localhost:6379/1")
+    self.redis = Redis.new(host: "localhost", port: 6379, db: 1)
   end
 
-  assert B.redis.url != Ohm.redis.url
+  assert B.redis.connection[:id] != Ohm.redis.connection[:id]
 end

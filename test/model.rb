@@ -730,7 +730,7 @@ end
 class ::Car < Ohm::Model
   attribute :name
 
-  self.redis = Redic.new
+  self.redis = Redis.new
 end
 
 class ::Make < Ohm::Model
@@ -745,7 +745,7 @@ test "save to the selected database" do
   car = Car.create(:name => "Twingo")
   make = Make.create(:name => "Renault")
 
-  redis = Redic.new
+  redis = Redis.new
 
   assert ["1"] == redis.call("SMEMBERS", "Make:all")
   assert [] == redis.call("SMEMBERS", "Car:all")
@@ -766,7 +766,7 @@ test "allow changing the database" do
   Car.create(:name => "Twingo")
   assert_equal ["1"], Car.redis.call("SMEMBERS", Car.all.key)
 
-  Car.redis = Redic.new("redis://127.0.0.1:6379")
+  Car.redis = Redis.new(host: "127.0.0.1", port: 6379)
   assert_equal [], Car.redis.call("SMEMBERS", Car.all.key)
 
   Car.redis.call("SELECT", 15)
